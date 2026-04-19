@@ -41,10 +41,10 @@ def get_weather(message):
             'lang': 'ru'
         }
 
-        responce = requests.get(base_url, params = params)
+        response = requests.get(base_url, params = params)
         data = response.json()
 
-        if respons.status_code != 200:
+        if response.status_code != 200:
             if data.get('cod') == '404':
                 bot.reply_to(message, f'Город "{city}" не найден. Проверьте написание')
             else:
@@ -55,5 +55,15 @@ def get_weather(message):
         temp = data['main']['temp']
         feels_like = data['main']['feels_like']
         humidity = data['main']['humidity']
-        presure = data['main']['pressure']
+        pressure = data['main']['pressure']
         wind_speed = data['wind']['speed']
+
+        weather_info = (
+            f'Погода в {city}:\n\n'
+            f'Описание : {weather_desc.capitalize()}'
+            f'Температура :{temp:if}°C\n'
+            f'Ощущается как: {feels_like:.if}°C\n'
+            f'Влажность: {humidity}%\n'
+            f'Давление: {pressure} гПа\n'
+            f'Скорость ветра: {wind_speed} м/с'
+        )
