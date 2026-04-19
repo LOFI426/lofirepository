@@ -20,4 +20,33 @@ def send_welcome(message):
         'Введите название города на английском языке.'
     )
     bot.reply_to(message, welcome_text)
-    
+
+@bot.message_handler(commands = ['weather'])
+def get_weather(message):
+    city = message.text.replace('/weather','').strip()
+
+    if not city:
+        bot.reply_to(
+            message,
+            'Пожалуйста, укажите название города\n'
+            'Пример: /weather Moscow'
+
+        )
+        return
+    try:
+        params = {
+            'q': city,
+            'appid': api_key,
+            'units': 'metric',
+            'lang': 'ru'
+        }
+
+        responce = requests.get(base_url, params = params)
+        data = response.json()
+
+        if respons.status_code != 200:
+            if data.get('cod') == '404':
+                bot.reply_to(message, f'Город "{city}" не найден. Проверьте написание')
+            else:
+                bot.reply_to(message, 'Ошибка при получении данных о погоде.')
+                return
